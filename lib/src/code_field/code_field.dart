@@ -203,7 +203,6 @@ class _CodeFieldState extends State<CodeField> {
   LinkedScrollControllerGroup? _controllers;
   ScrollController? _numberScroll;
   ScrollController? _codeScroll;
-  ScrollController? _horizontalCodeScroll;
   final _codeFieldKey = GlobalKey();
 
   OverlayEntry? _suggestionsPopup;
@@ -236,7 +235,6 @@ class _CodeFieldState extends State<CodeField> {
     widget.controller.searchController.addListener(
       _onSearchControllerChange,
     );
-    _horizontalCodeScroll = ScrollController();
     _focusNode = widget.focusNode ?? FocusNode();
     _focusNode!.attach(context, onKeyEvent: _onKeyEvent);
 
@@ -272,7 +270,6 @@ class _CodeFieldState extends State<CodeField> {
     _searchPopup = null;
     _numberScroll?.dispose();
     _codeScroll?.dispose();
-    _horizontalCodeScroll?.dispose();
     super.dispose();
   }
 
@@ -364,14 +361,7 @@ class _CodeFieldState extends State<CodeField> {
       ),
     );
 
-    return SingleChildScrollView(
-      padding: EdgeInsets.only(
-        right: widget.padding.right,
-      ),
-      scrollDirection: Axis.horizontal,
-      controller: _horizontalCodeScroll,
-      child: intrinsic,
-    );
+    return intrinsic;
   }
 
   @override
@@ -520,8 +510,7 @@ class _CodeFieldState extends State<CodeField> {
   double _getPopupLeftOffset(TextPainter textPainter) {
     return max(
       _getCaretOffset(textPainter).dx +
-          widget.padding.left -
-          _horizontalCodeScroll!.offset +
+          widget.padding.left +
           (_editorOffset?.dx ?? 0),
       0,
     );
